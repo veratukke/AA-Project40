@@ -1,0 +1,199 @@
+Require Import BenB.
+Require Import BenB2.
+
+(* ====================================================================== *)
+
+(* 
+   Title: 
+   ======
+   Authors:
+   [ Names and student numbers. ]
+*)
+
+(* ====================================================================== *)
+
+(*
+   [
+     This file has to be a valid script, meaning that it
+     can be executed by Coq.
+     Therefore, explanations in natural language have to be between
+     comment markers.
+
+     In this project template, text within square brackets (within
+     comment markers) is intended to clarify what needs to be 
+     written where.
+
+     In the final version, we expect that all these blocks have been
+     replaced by (your) proper content.
+   ]
+   
+*)
+
+(*
+   Abstract:
+   =========
+   [
+     For the intermediate version of this project:
+     Explain briefly which perspective of which artifact will be
+     studied and why this topic has been chosen.
+   ]
+
+   [
+     And for the final version of this project:
+     Explain whether you managed to prove the correctness theorem.
+     And how did that go: did you have to change a lot compared to
+     the intermediate version, or could you use your formalization
+     without many modifications?
+   ]
+
+*)
+
+(*
+   Focus:
+
+   Modeling Goal:
+   ==============
+   [ Verification model / Demonstration model / Construction model ]
+
+
+   Fragment of reality:
+   ====================
+   [ ... ]
+
+
+   Perspective:
+   ============
+   [ ... ]
+
+*)
+
+
+(*
+   Abstractions or simplifications:
+   ================================
+   [
+     Depending on the chosen focus, you may simplify certain aspects of
+     your artifact.
+     If you are modeling some kind of home automation system, it is not
+     unreasonable to assume that the net power is constant, although this
+     is not exactly the case in reality. However, if you are modeling an
+     artifact that protects against high peaks of power, these fluctuations
+     should be part of the model.
+
+     Write down explicitly which assumptions you have made to simplify
+     the artifact.
+   ]
+
+*)
+
+(* ====================================================================== *)
+
+(* Domain model *)
+
+(* Domains (including their meaning) *)
+
+(* Constants (including their meaning) *)
+
+(* Functions (including their meaning) *)
+
+(* Predicates (including their meaning and measurements) *)
+
+(* ====================================================================== *)
+
+(* Auxiliary predicates (including their meaning) *)
+
+(*
+   [
+     At this place within this template you may define as many
+     auxiliary predicates as you want, but do not forget to include
+     their meaning.
+   ]
+*)
+
+(* ====================================================================== *)
+
+(* Components *)
+
+(*
+   [
+     For each component you have to specify the following information:
+    
+     OUTSIDE comment markers:
+     - The 'Definition' to be read by Coq, in a readable layout that
+       matches the mathematical structure of the formula.
+
+     WITHIN comment markers:
+     - The specification of the component in natural language. Obviously,
+       this specification should be consistent with the formula used
+       by Coq.
+     - If appropriate, a short explanation in natural language about
+       the choices that have been made.
+   ]
+*)
+
+(* ====================================================================== *)
+
+(* Specification of the overall system *)
+
+(*
+   [
+     Here you have to specify:
+
+     OUTSIDE comment markers:
+     - The 'Definition' to be read by Coq, in a readable layout that
+       matches the mathematical structure of the formula.
+
+     WITHIN comment markers:
+     - The specification of the overall system in natural language.
+       Obviously, this specification should be consistent with the
+       formula used by Coq.
+     - If appropriate, a short explanation in natural language about
+       the choices that have been made.
+   ]
+*)
+
+(* ====================================================================== *)
+
+(* Extras *)
+
+(*
+   [
+     It is very likely that you do not need any extras!
+
+     However, if it turns out during your proof that you have to prove
+     several times (almost) the same, then you may define a 'Lemma' at
+     this place, followed by its proof. And in the proof of the correctness
+     theorem, you may apply this lemma several times.
+     Note that it is always allowed to add lemmas to this script!
+
+     Sometimes it happens that Coq has troubles with 'trivial' properties
+     of numbers, that cannot be solve easily using 'lin_solve'.
+     In such situations, you may contact your supervisor and discuss 
+     whether this may be solved by adding an 'Axiom', which can also be
+     applied later on within the proof of the correctness theorem.
+   ]
+*)
+
+(* Correctness theorem *) 
+
+(* ====================================================================== *)
+
+(*
+   [
+     Write down your correctness theorem in the usual notation:
+     Theorem CorTheorem:
+     Component1 /\ Component2 /\ ... /\ ComponentN -> SpecOfTheOverallSystem.
+
+     Note that for the intermediate version, you should keep this
+     theorem within comment markers, otherwise you will get a red cross
+     for stating a theorem without a proof.
+   
+     For the final version you obviously have to remove these comment
+     markers and probide a real proof!
+   ]
+*)
+
+(* 
+Theorem CorTheorem:
+
+*)   
