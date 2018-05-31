@@ -253,12 +253,12 @@ Definition vacuum_pump :=
         -> 
            vacuum_out (t+70) /\ air_out (t+70)  
 .
-(*If there is vacuum_power , then 70/10ths seconds later, 
-a vacuum of 15 Hg is supplied by the vacuum_pump. *)
+(*If there is vacuum_power for 70/10ths seconds, then  
+a vacuum of 15 Hg is supplied by the vacuum_pump and an airflow is released by the vacuum pump. *)
 
 Definition vacuum_tube :=
   forall t:T,
-     vacuum_out t
+     vacuum_out t 
    ->
      vacuum_in  (t+8)
 .   
@@ -267,7 +267,19 @@ a vacuum of 15 Hg is supplied by the vacuum_tube. *)
 
 Definition pulsator :=
   forall t:T,
-     vacuum_in t /\ pulsator_power t
+       (
+        forall d:T,
+          d in [0, 1)
+         -> 
+          pulsator_power (t+d)
+       )
+     /\
+       (
+        exists p:T,
+          p in [0,1)
+         /\
+          vacuum_in (t+p)
+       )     
    ->
      vacuum_pulses_out (t+1)
 .   
