@@ -1,0 +1,605 @@
+Require Import BenB.
+Require Import BenB2.
+
+(* ====================================================================== *)
+
+(*
+   Title: Simplified Cow Milking Machine
+   ======
+   Authors:
+   Marc-William Verwoert (s4718801)
+   Vera Tukke (s4766970)
+   Madelief Rennspies (s4703103)
+   Fu-Rianne Veens (4792424)
+
+*)
+
+(* ====================================================================== *)
+
+(*
+   [
+     This file has to be a valid script, meaning that it
+     can be executed by Coq.
+     Therefore, explanations in natural language have to be between
+     comment markers.
+
+     In this project template, text within square brackets (within
+     comment markers) is intended to clarify what needs to be
+     written where.
+
+     In the final version, we expect that all these blocks have been
+     replaced by (your) proper content.
+   ]
+   
+*)
+
+(*
+   Abstract:
+   =========
+   [
+     For the intermediate version of this project:
+     Explain briefly which perspective of which artifact will be
+     studied and why this topic has been chosen.
+     
+     
+    In this project, a cow milking device, which consists of a pulsator and a vacuum pump 
+    connected to the teats of a cow will be studied,
+    to investigate how such a device can result in a milk bottle being filled.
+    This topic is chosen in this project due to an interesting story of one of the authors.
+    She told the story of her dream of ice skating cows, which led to a conversation,
+    between the authors about cows and their mutual interest in production of milk and the countryside.
+    Since, milking of cows can be done non-automatically (with the hands),
+    we were interested in the automatic side to the milking of cows via the usage of a cow milking device
+    and thus it was decided to choose a cow milking device as the artefact of the project.
+
+     
+   ]
+
+   [
+     And for the final version of this project:
+     Explain whether you managed to prove the correctness theorem.
+     And how did that go: did you have to change a lot compared to
+     the intermediate version, or could you use your formalization
+     without many modifications?
+   ]
+
+*)
+
+(*
+   Focus:
+
+   Modeling Goal:
+   ==============
+   Verification model
+
+   Fragment of reality:
+   ====================
+   Cow milking device which consists of a vacuum pump, pulsator, teat cups, milk tube, power strip, and receiving bottle.
+   Beside the milking device, we need a cow (that is able to produce milk), air, and a electricity supplier.
+
+  Perspective:
+   ============
+   The simplified cow milking machine, milks cows
+   automatically at the correct moment and when the bottle is filled, it stops milking.
+
+*)
+
+
+
+(*
+
+   
+   (*
+   Abstractions or simplifications:
+   ================================
+   [
+     Depending on the chosen focus, you may simplify certain aspects of
+     your artifact.
+     If you are modeling some kind of home automation system, it is not
+     unreasonable to assume that the net power is constant, although this
+     is not exactly the case in reality. However, if you are modeling an
+     artifact that protects against high peaks of power, these fluctuations
+     should be part of the model.
+
+     Write down explicitly which assumptions you have made to simplify
+     the artifact.
+   ]
+
+    We are assuming that the time the cow takes to fill the receiving bottle is consistent,
+    meaning that the amount of milk given over a period of time is always the same.
+    Thus, the speed of milking is always the same and the total amount of milk (and hence the time being milked),
+    is alwaysthe same.     
+    Lastly, we are assuming that the outputs and the inputs from the power strip don’t fluctuate with
+    respect to the power.
+*)
+
+
+
+
+
+
+*)
+
+(* ====================================================================== *)
+
+(* Domain model *)
+
+(* Domains (including their meaning) *)
+Definition T := R.
+  (* Meaning: Time in tenths of seconds in real numbers. *)
+Variable Cows : Set.
+    (* Meaning: The set of cows. *)
+Variable Teats: Set.
+    (* The set of  teats. *)
+
+
+
+(* Constants (including their meaning) *)
+
+
+(* Functions (including their meaning) DOORLOPEN & AANPASSEN!!!!*)
+Variable teatsFromCow (* c *): Cows -> Teats.
+    (*Gets the teats from the specific cow. *)
+Variable milking_time (* c *): Cows -> T.
+    (*Gets the milking time of cow c.*)
+
+
+(* Predicates (including their meaning and measurements) *)
+Variable power_in (* t *) : T ->  Prop.
+    (* A voltage of 230V is supplied on the plug of the power_strip at time t. *)
+    (* Measure the voltage that is supplied on the plug of the power_strip at that time with a voltmeter. *)
+Variable ps_out (* t *) : T -> Prop.
+    (* A voltage of 230V is supplied from the power_strip at time t. *)
+    (* Measure the voltage that is supplied from the power_strip at that time with a voltmeter. *)
+
+Variable vacuum_power (* t *) : T -> Prop.
+    (* A voltage of 230V is supplied from power_cable_1 at time t. *)
+    (* Measure the voltage that is supplied from power_cable_1 at that time with a voltmeter. *)
+
+Variable pulsator_power (* t *) : T -> Prop.
+    (* A voltage of 230V is supplied from power_cable_2 at time t. *)
+    (* Measure the voltage of power_cable_2 at that time with a voltmeter. *)
+    
+Variable vacuum_in (* t *) : T -> Prop.
+    (* A vacuum of 15 Hg is supplied by the vacuum_tube, 
+    which causes air escaping into the pulsator at time t. *)
+    (* Measure the vacuum  supplied by vacuum_tube at that time with a vacuum gauge. *)
+Variable vacuum_out (* t *) : T -> Prop.
+    (* A vacuum of 15 Hg, which is supplied by the vacuum_pump, 
+    which causes air escaping into the vacuum_tube at time t. *)
+    (* Measure the vacuum  supplied by vacuum_pump at that time with a vacuum gauge. *)
+    
+Variable vacuum_pulses_out (* t *) : T -> Prop.
+    (* Pulses of vacuum are being supplied by the pulsator at time t. *)
+    (* Measure the vacuum  supplied by pulsator at that time with a vacuum gauge. *)
+Variable vacuum_pulses_in (* t *) : T -> Prop.
+    (* Pulses of vacuum are being supplied to the teat_cups at time t. *)
+    (* Measure the vacuum  supplied by pulsator at that time with a vacuum gauge. *)
+Variable cow_teats_in (* t s *): T -> Teats -> Prop.
+    (* The teats s are in the teat_cups at time t. *)
+    (* Look if teats s are in the teat_cups at that time. *)
+Variable milk_out (* t c *): T -> Cows -> Prop.
+    (* Milk of cow c comes out of the teat_cups at time t. *)
+    (* Look if the milk of cow c comes out of the teat_cups at that time. *)
+Variable bottle_being_filled (* t c *): T -> Cows -> Prop.
+    (* The receiving_bottle is being filled with milk of cow c at time t. *)
+    (* Look if the receiving bottle is being filled with milk at that time. *)
+Variable filled_message (* t c *): T -> Cows -> Prop.
+    (* The receiving_bottle is filled at time t with milk from cow c. *)
+    (* Look if the bottle is being filled at that time. *)
+    
+Variable bottle_filled (* t *): T -> Prop.
+   (* Message which states that, the receiving_bottle has been filled at time t. *)
+    (* Look if the bottle is full or not. *)
+    
+
+    
+(* ====================================================================== *)
+
+(* Auxiliary predicates (including their meaning) *)
+
+(*
+   [
+     At this place within this template you may define as many
+     auxiliary predicates as you want, but do not forget to include
+     their meaning.
+   ]
+*)
+
+(* ====================================================================== *)
+
+(* Components *)
+
+(*
+   [
+     For each component you have to specify the following information:
+    
+     OUTSIDE comment markers:
+     - The 'Definition' to be read by Coq, in a readable layout that
+       matches the mathematical structure of the formula.
+
+     WITHIN comment markers:
+     - The specification of the component in natural language. Obviously,
+       this specification should be consistent with the formula used
+       by Coq.
+     - If appropriate, a short explanation in natural language about
+       the choices that have been made.
+   ]
+*)
+Definition power_strip :=
+  forall t:T,
+     power_in t
+   ->
+     ps_out (t+2)
+.
+(*If at time t power_in is supplied to the power_strip and the bottle is not filled,
+then 2/10ths of a second later a voltage of 230V is supplied from the power_strip.  *)
+
+Definition power_cable_1 :=
+  forall t:T,
+     ps_out t
+   ->
+     vacuum_power (t+1)
+.
+(*If at time t ps_out is supplied to power_cable_1, then 1/10ths of a second later
+a voltage of 230V is supplied from power_cable_1. *)
+
+Definition power_cable_2 :=
+  forall t:T,
+     ps_out t
+   ->
+     pulsator_power (t+1)
+.
+(*If at time t ps_out is supplied to power_cable_2, then 1/10ths of a second later
+a voltage of 230V is supplied from power_cable_2. *)
+
+Definition vacuum_pump :=
+    forall t:T,
+           (
+            forall d:T,
+               d in (0, 70]
+             ->
+               vacuum_power (t+d)
+           )
+        ->
+           vacuum_out (t+70)   
+.
+(*If there is vacuum_power for the duraton of 70/10ths seconds, then  
+a vacuum of 15 Hg is supplied by the vacuum_pump. *)
+
+Definition vacuum_tube :=
+  forall t:T,
+     vacuum_out t
+   ->
+     vacuum_in  (t+8)
+.   
+(*If there is a vacuum of 15 Hg supplied by the vacuum_pump at time t, then 8/10ths of a second later,
+a vacuum of 15 Hg is supplied by the vacuum_tube. *)
+
+Definition pulsator :=
+  forall t:T,
+       (
+        exists p:T,
+            p in (0, 2]
+          /\
+            (
+              forall d:T,
+                 d in (0,p]
+               ->
+                 pulsator_power (t+d)
+            )
+          /\
+            vacuum_in (t+p)
+       )
+    ->
+        exists v:T,
+          vacuum_pulses_out (t+v)
+.
+
+
+(* If there is a vacuum of 15 Hg supplied by the vacuum_tube somewhere in p and
+a voltage of 230V is supplied from power_cable_2 during the duration of the interval,
+then 1/10ths of a second later, pulses of vacuum are being supplied by the pulsator. *)
+
+Definition pulsator_cup_cable :=
+  forall t:T,
+     vacuum_pulses_out t
+    ->
+     vacuum_pulses_in (t+8)
+.   
+
+(*If there are pulses of vacuum being supplied by the pulsator at time t, then 8/10ths of a second later,
+pulses of vacuum are being supplied to the teat_cups. *)
+
+Definition teat_cups:=
+  forall t:T,
+      forall c:Cows,
+            (
+             forall d:T,
+                d in (0,10]
+              ->
+               vacuum_pulses_in (t+d)
+            )
+          /\
+            cow_teats_in t (teatsFromCow c)
+        ->
+          milk_out (t+10) c
+.
+(*If there are pulses of vacuum being supplied to the teat_cups at time t for 1 second and
+the teats of a cow c are in the teat_cups at time t, then a second later,
+milk of cow c, comes out of the teat_cups at time t .*)
+
+Definition milk_tube:=
+    forall t:T,
+        forall c:Cows,
+           milk_out t c
+         ->
+           bottle_being_filled (t+10) c
+.
+(*If milk of cow c comes out of the teat_cups at time t, then a second later,
+the receiving_bottle is being filled with milk from cow c.*)
+
+Definition receiving_bottle:=
+    forall t:T,
+        forall c:Cows,
+            (
+             forall d:T,
+                 d in (0, milking_time c]
+              ->
+                 bottle_being_filled (t+d) c
+            )
+          ->
+              filled_message (t+milking_time c) c
+
+.
+
+
+
+(*If the receiving_bottle is being filled with milk at time t from cow c, then a second later,
+the receiving_bottle is filled and a filled_message is send to the power_strip and teat_cup. !!!!PAS AAN!!!!*)
+
+
+
+
+(* ====================================================================== *)
+
+(* Specification of the overall system *)
+
+(*
+   [
+     Here you have to specify:
+
+     OUTSIDE comment markers:
+     - The 'Definition' to be read by Coq, in a readable layout that
+       matches the mathematical structure of the formula.
+
+     WITHIN comment markers:
+     - The specification of the overall system in natural language.
+       Obviously, this specification should be consistent with the
+       formula used by Coq.
+     - If appropriate, a short explanation in natural language about
+       the choices that have been made.
+   ]
+*)
+
+Definition simplified_cow_milking_machine:=
+     forall t:T,
+         forall c:Cows,
+            (
+               exists m:T,
+                     (
+                      forall s:T,
+                         s in (t, t+81+m+28+milking_time c]
+                       ->
+                         power_in s
+                     )
+                   /\
+                     (
+                      exists w:T,
+                         w in (t, t+81+m+8]
+                       /\
+                         cow_teats_in w (teatsFromCow c)
+                     )
+            )
+           ->
+             (
+              exists v:T,
+                 filled_message (t+v+milking_time c) c
+             )
+.
+    
+    (*  Specification of the overall system *)
+    (*If at time t there is power supplied to the power_strip,
+    for a duration of 120/10ths of a second plus an arbitrary time d,
+    and if after t plus 3/10ths of a second air is supplied to the vacuum_pump
+    until t plus d and if the teats of cow c are presented to the teat_cups
+    between t and t plus 90/10ths of a second, then a reveiving_bottle has been
+    filled with cow milk at t plus d plus 110/10ths of a second and then 10/10ths
+    of a second later the teats of the cow are released from the teat_cups. !!!!!PAS AAN!!!!*)
+
+
+
+(* ====================================================================== *)
+
+(* Extras *)
+
+
+Hypothesis boundedMilkingTime :
+forall c:Cows,
+   (milking_time c)  in [1800,2400]
+.
+
+(* This hypothesis states that the receiving_bottle is filled between 1800 and 2400 tenths of seconds.
+It limits the cow dependent milking time.*)
+
+
+
+(*
+   [
+     It is very likely that you do not need any extras!
+
+     However, if it turns out during your proof that you have to prove
+     several times (almost) the same, then you may define a 'Lemma' at
+     this place, followed by its proof. And in the proof of the correctness
+     theorem, you may apply this lemma several times.
+     Note that it is always allowed to add lemmas to this script!
+
+     Sometimes it happens that Coq has troubles with 'trivial' properties
+     of numbers, that cannot be solve easily using 'lin_solve'.
+     In such situations, you may contact your supervisor and discuss
+     whether this may be solved by adding an 'Axiom', which can also be
+     applied later on within the proof of the correctness theorem.
+   ]
+*)
+
+(* Correctness theorem *)
+
+(* ====================================================================== *)
+
+(*
+   [
+     Write down your correctness theorem in the usual notation:
+     Theorem CorTheorem:
+         power_strip
+        /\
+         power_cable_1
+        /\
+         power_cable_2
+        /\
+         vacuum_pump
+        /\
+         vacuum_tube
+        /\
+         pulsator
+        /\
+         pulsator_cup_cable
+        /\
+         teat_cups
+        /\
+         milk_tube
+        /\
+         receiving_bottle
+     ->
+        simplified_cow_milking_machine.
+
+     Note that for the intermediate version, you should keep this
+     theorem within comment markers, otherwise you will get a red cross
+     for stating a theorem without a proof.
+   
+     For the final version you obviously have to remove these comment
+     markers and probide a real proof!
+   ]
+*)
+
+Theorem CorTheorem:
+         power_strip
+        /\
+         power_cable_1
+        /\
+         power_cable_2
+        /\
+         vacuum_pump
+        /\
+         vacuum_tube
+        /\
+         pulsator
+        /\
+         pulsator_cup_cable
+        /\
+         teat_cups
+        /\
+         milk_tube
+        /\
+         receiving_bottle
+     ->
+        simplified_cow_milking_machine.
+   
+Proof.
+
+splitAss.
+imp_i powerStrip.
+imp_i powerCable1.
+imp_i powerCable2.
+imp_i vacuumPump.
+imp_i vacuumTube.
+imp_i pulsator1.
+imp_i pulsatorCupCable.
+imp_i teatCups.
+imp_i milkTube.
+imp_i receivingBottle.
+unfold simplified_cow_milking_machine.
+all_i a.
+all_i b.
+imp_i ass2.
+
+exi_e (exists m : T,  (forall s : T, s in  (a, a + 81 + m + 28 + milking_time b] -> power_in s) /\ exists w : T, w in  (a, a + 81 + m + 8] /\ cow_teats_in w (teatsFromCow b)) f ass3.
+hyp ass2.
+unfold receiving_bottle in receivingBottle.
+exi_i (f-a).
+imp_e  (forall d : T,
+                     d in  (0, milking_time b] ->
+                     bottle_being_filled (f + d) b ).
+replace (a+(f-a)) with f.
+
+Focus 2.
+lin_solve.
+
+all_e (forall c : Cows, (( forall d : T,
+    d in  (0, milking_time c] -> bottle_being_filled (f + d) c) ->
+    filled_message (f + milking_time c) c)) b.
+all_e (forall t:T, (forall c : Cows, (( forall d : T,
+    d in  (0, milking_time c] -> bottle_being_filled (t + d) c) ->
+    filled_message (t + milking_time c) c))) f.
+hyp receivingBottle.
+unfold milk_tube in milkTube.
+fold receiving_bottle in receivingBottle.
+all_i e.
+imp_i ass5.
+imp_e (milk_out (f) b).
+replace e with 10.
+all_e (forall c:Cows, milk_out f c -> bottle_being_filled (f+ 10) c) b.
+
+
+all_e (forall t:T, (forall c : Cows, milk_out (t) c -> bottle_being_filled (t + 10) c)) f.
+hyp milkTube.
+imp_e (e in (0, milking_time b]).
+interval.
+imp_i ass6.
+Focus 2.
+hyp ass5.
+
+
+
+
+
+
+unfold teat_cups in teatCups.
+imp_i ass7.
+
+
+
+lin_solve.
+
+
+
+hyp milkTube.
+interval.
+
+
+
+
+exi_e  (exists w : T,  w in  (a, a + 81 + f + 8] /\ cow_teats_in w (teatsFromCow b)) p ass4.
+interval.
+exi_e (exists v : T, filled_message (a + v + milking_time b) b) g ass5.
+
+
+Qed.
+
+
+
+
+
+
+
+
+
